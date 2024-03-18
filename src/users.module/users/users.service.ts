@@ -20,17 +20,22 @@ export class UsersService {
   ) {}
 
   /** @description Crea un nuevo usuario */
-  async register(user: UsuarioDto) {
+  async register(user: UsuarioDto): Promise<UsuarioDto> {
     try {
       const availability = await this.checkAvailability(user.username);
       if (!availability) throw new ConflictException('username already taken');
-      const hashPassword = await this.authService.hashPassword(user.contrasenia);
-      user.contrasenia = hashPassword;
+      if(user.contrasenia) {
+        const hashPassword = await this.authService.hashPassword(
+          user.contrasenia,
+        );
+        user.contrasenia = hashPassword;
+      }
       user.username = user.username.toLowerCase();
       user.email = user.email.toLowerCase();
       const result = await this.userRepo.save(user);
-      return result;
+      return {...result, contrasenia: '****'};
     } catch (e: any) {
+      console.log(e)
       throw new HttpException(e.message, e.status);
     }
   }
@@ -62,13 +67,16 @@ export class UsersService {
       };
       return result;
     } catch (e: any) {
-      console.log(e)
-      throw new HttpException(e.message ? e.message : 'Server error', e.status ? e.status : 500);
+      console.log(e);
+      throw new HttpException(
+        e.message ? e.message : 'Server error',
+        e.status ? e.status : 500,
+      );
     }
   }
 
   /** @description Devuelve la información del usuario */
-  async getUser(username: string) {
+  async getUser(username: string): Promise<UsuarioDto> {
     try {
       const user = await this.userRepo.findOne({
         where: { username: username },
@@ -106,13 +114,49 @@ export class UsersService {
       order: {
         id: sortBy === 'ASC' ? 'ASC' : sortBy === 'DESC' ? 'DESC' : 'DESC',
       },
+      relations: {
+        usuario_carga: true,
+        pericia: true
+      },
       select: {
         id: true,
         nombre: true,
         apellido: true,
         username: true,
+        tel: true,
+        email: true,
+        fecha_creado: true,
+        usuario_carga: {
+          id: true,
+          nombre: true,
+          apellido: true,
+        },
       },
     });
-    return { entities, count }
+    return { entities, count };
+  }
+
+  async getOne(id: number) {
+    try {
+      const result = await this.userRepo.findOne({
+        where: { id: id },
+        relations: {
+          pericia: true,
+        },
+        select: {
+          id: true,
+          nombre: true,
+          apellido: true,
+          username: true,
+          email: true,
+          tel: true,
+          pericia: true,
+        },
+      });
+      if (!result) throw new NotFoundException('entity not found');
+      return result;
+    } catch (e: any) {
+      throw new HttpException(e.message, e.status);
+    }
   }
 }

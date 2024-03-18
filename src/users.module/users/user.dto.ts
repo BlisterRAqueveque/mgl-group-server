@@ -14,6 +14,11 @@ export class UsuarioDto {
   superuser: boolean;
   rol: Roles;
 
+  fecha_creado: Date;
+  fecha_eliminado: Date;
+
+  usuario_carga: UsuarioDto;
+  usuarios_creados: UsuarioDto;
   carga_pericia: PericiaDto[];
   pericia: PericiaDto[];
 

@@ -7,6 +7,7 @@ import {
   Query,
   Res,
   Headers,
+  Param,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsuarioDto } from './user.dto';
@@ -27,6 +28,7 @@ export class UsersController {
     if (result)
       res.status(HttpStatus.CREATED).json({
         ok: true,
+        result,
         msg: 'Created',
       });
     else
@@ -39,12 +41,10 @@ export class UsersController {
   /** @description Endpoint para el login del usuario */
   @Post('auth/login')
   async login(@Body() credentials: any, @Res() res: Response) {
-    console.log(credentials)
     const result = await this.userService.login(
       credentials.username,
       credentials.password,
     );
-    console.log(result)
     if (result)
       res.status(HttpStatus.OK).json({
         ok: true,
@@ -80,7 +80,17 @@ export class UsersController {
     });
   }
 
-  @Get()
+  @Get(':id')
+  async getOne(@Param('id') id: number, @Res() res: Response) {
+    const result = await this.userService.getOne(id)
+    res.status(HttpStatus.OK).json({
+      ok: true,
+      result,
+      msg: 'Approved'
+    })
+  }
+
+  @Get('user/info')
   async getUserInfo(
     @Headers('authorization') token: string,
     @Res() res: Response,
@@ -93,6 +103,7 @@ export class UsersController {
       const payload = await this.auth.verifyJwt(token.split(' ')[1]);
       //* Realizamos la consulta a la base de datos y retornamos la información.
       const user = await this.userService.getUser(payload.username);
+      user.contrasenia = '****'
       res.status(HttpStatus.OK).json({
         ok: true,
         user,
