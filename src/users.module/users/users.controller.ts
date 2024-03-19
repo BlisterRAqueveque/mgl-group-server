@@ -8,6 +8,7 @@ import {
   Res,
   Headers,
   Param,
+  Put,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsuarioDto } from './user.dto';
@@ -82,12 +83,12 @@ export class UsersController {
 
   @Get(':id')
   async getOne(@Param('id') id: number, @Res() res: Response) {
-    const result = await this.userService.getOne(id)
+    const result = await this.userService.getOne(id);
     res.status(HttpStatus.OK).json({
       ok: true,
       result,
-      msg: 'Approved'
-    })
+      msg: 'Approved',
+    });
   }
 
   @Get('user/info')
@@ -103,7 +104,7 @@ export class UsersController {
       const payload = await this.auth.verifyJwt(token.split(' ')[1]);
       //* Realizamos la consulta a la base de datos y retornamos la información.
       const user = await this.userService.getUser(payload.username);
-      user.contrasenia = '****'
+      user.contrasenia = '****';
       res.status(HttpStatus.OK).json({
         ok: true,
         user,
@@ -116,5 +117,27 @@ export class UsersController {
         msg: 'Unauthorized',
       });
     }
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id') id: number,
+    @Headers('authorization') token: string,
+    @Body() user: Partial<UsuarioDto>,
+    @Res() res: Response,
+  ) {
+    let result
+    if(!id || id.toString() === '0') {
+      const payload = await this.auth.verifyJwt(token.split(' ')[1]);
+      result = await this.userService.update(payload.sub, user);
+    }
+    else {
+      result = await this.userService.update(id, user);
+    }
+    res.status(HttpStatus.OK).json({
+      ok: true,
+      result,
+      msg: 'Approved',
+    });
   }
 }

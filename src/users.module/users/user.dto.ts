@@ -11,6 +11,7 @@ export class UsuarioDto {
   username: string;
   email: string;
   tel: string;
+  activo: boolean;
   superuser: boolean;
   rol: Roles;
 

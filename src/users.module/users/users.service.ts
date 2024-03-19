@@ -1,15 +1,17 @@
 import {
+  BadRequestException,
   ConflictException,
   HttpException,
+  HttpStatus,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
+  UnauthorizedException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UsuarioEntity } from './user.entity';
+import { UsuarioDto } from 'src/users.module/users/user.dto';
 import { FindOptionsWhere, Like, Repository } from 'typeorm';
-import { UsuarioDto } from './user.dto';
 import { AuthService } from '../auth/auth.service';
+import { UsuarioEntity } from './user.entity';
 
 @Injectable()
 export class UsersService {
@@ -24,7 +26,7 @@ export class UsersService {
     try {
       const availability = await this.checkAvailability(user.username);
       if (!availability) throw new ConflictException('username already taken');
-      if(user.contrasenia) {
+      if (user.contrasenia) {
         const hashPassword = await this.authService.hashPassword(
           user.contrasenia,
         );
@@ -33,9 +35,9 @@ export class UsersService {
       user.username = user.username.toLowerCase();
       user.email = user.email.toLowerCase();
       const result = await this.userRepo.save(user);
-      return {...result, contrasenia: '****'};
+      return { ...result, contrasenia: '****' };
     } catch (e: any) {
-      console.log(e)
+      console.log(e);
       throw new HttpException(e.message, e.status);
     }
   }
@@ -56,11 +58,13 @@ export class UsersService {
   async login(username: string, password: string) {
     try {
       const user = await this.getUser(username);
+      if (!user.contrasenia) throw new HttpException(await this.authService.generateJwt(user), 300);
       const checkPass = await this.authService.comparePassword(
         password,
         user.contrasenia,
       );
       if (!checkPass) throw new UnauthorizedException('wrong credentials');
+      if(!user.activo) throw new BadRequestException('user inactive')
       const result = {
         token: await this.authService.generateJwt(user),
         user,
@@ -116,7 +120,7 @@ export class UsersService {
       },
       relations: {
         usuario_carga: true,
-        pericia: true
+        pericia: true,
       },
       select: {
         id: true,
@@ -126,6 +130,8 @@ export class UsersService {
         tel: true,
         email: true,
         fecha_creado: true,
+        activo: true,
+        rol: true,
         usuario_carga: {
           id: true,
           nombre: true,
@@ -154,6 +160,19 @@ export class UsersService {
         },
       });
       if (!result) throw new NotFoundException('entity not found');
+      return result;
+    } catch (e: any) {
+      throw new HttpException(e.message, e.status);
+    }
+  }
+
+  async update(id: number, user: Partial<UsuarioDto>) {
+    try {
+      if(user.contrasenia) user.contrasenia = await this.authService.hashPassword(user.contrasenia)
+      const oldUser = await this.userRepo.findOne({ where: { id: id } });
+      if (!oldUser) throw new NotFoundException('user not found');
+      const mergeUser = await this.userRepo.merge(oldUser, user);
+      const result = await this.userRepo.save(mergeUser);
       return result;
     } catch (e: any) {
       throw new HttpException(e.message, e.status);
