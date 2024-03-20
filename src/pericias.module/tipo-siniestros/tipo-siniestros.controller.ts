@@ -1,11 +1,23 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Query, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  Put,
+  Query,
+  Res,
+} from '@nestjs/common';
 import { TipoSiniestrosService } from './tipo-siniestros.service';
 import { Response } from 'express';
 import { AseguradoraDto } from '../aseguradoras/aseguradoras.dto';
+import { TipoSiniestroDto } from './tipo-siniestro.dto';
 
 @Controller('tipo-siniestros')
 export class TipoSiniestrosController {
-    constructor(private readonly tipoSiniestroService: TipoSiniestrosService) {}
+  constructor(private readonly tipoSiniestroService: TipoSiniestrosService) {}
 
   @Get()
   async getAllFilter(
@@ -58,13 +70,27 @@ export class TipoSiniestrosController {
     });
   }
 
-  @Delete(':id')
-  async softDelete(@Param('id') id: number, @Res() res: Response) {
-    const result = await this.tipoSiniestroService.softDelete(id)
+  @Put(':id')
+  async update(
+    @Param('id') id: number,
+    @Body() siniestro: Partial<TipoSiniestroDto>,
+    @Res() res: Response,
+  ) {
+    const result = await this.tipoSiniestroService.update(id, siniestro);
     res.status(HttpStatus.OK).json({
       ok: true,
       result,
-      msg: 'Approved'
-    })
+      msg: 'Approved',
+    });
+  }
+
+  @Delete(':id')
+  async softDelete(@Param('id') id: number, @Res() res: Response) {
+    const result = await this.tipoSiniestroService.softDelete(id);
+    res.status(HttpStatus.OK).json({
+      ok: true,
+      result,
+      msg: 'Approved',
+    });
   }
 }

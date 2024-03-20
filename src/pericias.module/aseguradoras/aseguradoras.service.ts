@@ -135,4 +135,21 @@ export class AseguradorasService {
       throw new HttpException(e.message, e.status);
     }
   }
+
+  /** @description Hace un update de la información del tipo de siniestro. */
+  async update(
+    id: number,
+    siniestro: Partial<AseguradoraDto>,
+  ): Promise<AseguradoraDto> {
+    try {
+      const entity = await this.aseguradoraRepo.findOne({
+        where: { id: id }
+      })
+      const mergeEntity = await this.aseguradoraRepo.merge(entity, siniestro)
+      const result = await this.aseguradoraRepo.save(mergeEntity)
+      return result
+    } catch (e) {
+      throw new HttpException(e.message, e.status)
+    }
+  }
 }

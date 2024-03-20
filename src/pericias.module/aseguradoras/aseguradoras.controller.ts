@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Put,
   Query,
   Res,
 } from '@nestjs/common';
@@ -63,6 +64,20 @@ export class AseguradorasController {
   @Post()
   async insert(@Body() aseguradora: AseguradoraDto, @Res() res: Response) {
     const result = await this.aseguradoraService.insert(aseguradora);
+    res.status(HttpStatus.OK).json({
+      ok: true,
+      result,
+      msg: 'Approved',
+    });
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id') id: number,
+    @Body() aseguradora: Partial<AseguradoraDto>,
+    @Res() res: Response,
+  ) {
+    const result = await this.aseguradoraService.update(id, aseguradora);
     res.status(HttpStatus.OK).json({
       ok: true,
       result,

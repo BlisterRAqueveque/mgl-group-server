@@ -1,4 +1,4 @@
-import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { TipoSiniestroDto } from './tipo-siniestro.dto';
 import { TipoSiniestroEntity } from './tipo-siniestros.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -110,9 +110,9 @@ export class TipoSiniestrosService {
   async insert(tipo: TipoSiniestroDto): Promise<TipoSiniestroDto> {
     try {
       const entity = await this.tipoSiniestroRepo.findOne({
-        where: { nombre: tipo.nombre }
+        where: { nombre: tipo.nombre },
       });
-      if (entity) return entity;
+      if (entity) throw new ConflictException('same entity');
       const result = await this.tipoSiniestroRepo.save(tipo);
       return result;
     } catch (e: any) {
@@ -133,6 +133,23 @@ export class TipoSiniestrosService {
     } catch (e: any) {
       console.log(e);
       throw new HttpException(e.message, e.status);
+    }
+  }
+
+  /** @description Hace un update de la información del tipo de siniestro. */
+  async update(
+    id: number,
+    siniestro: Partial<TipoSiniestroDto>,
+  ): Promise<TipoSiniestroDto> {
+    try {
+      const entity = await this.tipoSiniestroRepo.findOne({
+        where: { id: id }
+      })
+      const mergeEntity = await this.tipoSiniestroRepo.merge(entity, siniestro)
+      const result = await this.tipoSiniestroRepo.save(mergeEntity)
+      return result
+    } catch (e) {
+      throw new HttpException(e.message, e.status)
     }
   }
 }
