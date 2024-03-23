@@ -111,12 +111,20 @@ export class AseguradorasService {
   /** @description Inserta una nueva entidad */
   async insert(aseguradora: AseguradoraDto): Promise<AseguradoraDto> {
     try {
-      const entity = await this.aseguradoraRepo.findOne({
-        where: { CUIT: aseguradora.CUIT },
-      });
-      if (entity) return entity;
+      //! Se quita la comprobación de carga duplicada
+      // const entity = await this.aseguradoraRepo.findOne({
+      //   where: { CUIT: aseguradora.CUIT },
+      // });
+      // if (entity) return entity;
       const result = await this.aseguradoraRepo.save(aseguradora);
-      return result;
+      const entity = await this.aseguradoraRepo.findOne({
+        where: { id: result.id },
+        relations: {
+          usuario_carga: true,
+          pericia: true,
+        },
+      });
+      return entity;
     } catch (e: any) {
       console.log(e);
       throw new HttpException(e.message, e.status);
@@ -143,13 +151,13 @@ export class AseguradorasService {
   ): Promise<AseguradoraDto> {
     try {
       const entity = await this.aseguradoraRepo.findOne({
-        where: { id: id }
-      })
-      const mergeEntity = await this.aseguradoraRepo.merge(entity, siniestro)
-      const result = await this.aseguradoraRepo.save(mergeEntity)
-      return result
+        where: { id: id },
+      });
+      const mergeEntity = await this.aseguradoraRepo.merge(entity, siniestro);
+      const result = await this.aseguradoraRepo.save(mergeEntity);
+      return result;
     } catch (e) {
-      throw new HttpException(e.message, e.status)
+      throw new HttpException(e.message, e.status);
     }
   }
 }

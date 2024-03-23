@@ -1,13 +1,13 @@
 import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    HttpStatus,
-    Param,
-    Post,
-    Query,
-    Res,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  Query,
+  Res,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { PericiaDto } from './pericias.dto';
@@ -16,6 +16,16 @@ import { PericiasService } from './pericias.service';
 @Controller('pericias')
 export class PericiasController {
   constructor(private readonly periciaService: PericiasService) {}
+
+  @Get('get/form-format')
+  async getFormFormat(@Res() res: Response) {
+    const result = await this.periciaService.getFormFormat();
+    res.status(HttpStatus.OK).json({
+      ok: true,
+      result,
+      msg: 'Approved',
+    });
+  }
 
   @Get()
   async getAllFilter(

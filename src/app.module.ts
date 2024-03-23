@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { dbConfig } from './configurations/config';
 import { ConfigModule } from '@nestjs/config';
-import { UsersModuleModule } from './users.module/users.module.module';
+import { UsersModule } from './users.module/users.module';
 import { AuthMiddleware } from './users.module/auth/auth.middleware';
 import { PericiasModuleModule } from './pericias.module/pericias.module.module';
 import * as express from 'express';
@@ -14,7 +14,7 @@ import * as express from 'express';
     ConfigModule.forRoot({
       isGlobal: true,
     }), // Import config
-    TypeOrmModule.forRoot(dbConfig), UsersModuleModule, PericiasModuleModule,
+    TypeOrmModule.forRoot(dbConfig), UsersModule, PericiasModuleModule,
 
   ],
   controllers: [AppController],

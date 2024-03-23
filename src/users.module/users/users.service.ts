@@ -5,7 +5,7 @@ import {
   HttpStatus,
   Injectable,
   NotFoundException,
-  UnauthorizedException
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsuarioDto } from 'src/users.module/users/user.dto';
@@ -33,9 +33,9 @@ export class UsersService {
         user.contrasenia = hashPassword;
       }
       user.username = user.username.toLowerCase();
-      user.email = user.email.toLowerCase();
+      user.email = user.email ? user.email.toLowerCase() : '';
       const result = await this.userRepo.save(user);
-      return { ...result, contrasenia: '****' };
+      return { ...result, pericia: [], contrasenia: '****' };
     } catch (e: any) {
       console.log(e);
       throw new HttpException(e.message, e.status);
@@ -58,13 +58,14 @@ export class UsersService {
   async login(username: string, password: string) {
     try {
       const user = await this.getUser(username);
-      if (!user.contrasenia) throw new HttpException(await this.authService.generateJwt(user), 300);
+      if (!user.contrasenia)
+        throw new HttpException(await this.authService.generateJwt(user), 300);
       const checkPass = await this.authService.comparePassword(
         password,
         user.contrasenia,
       );
       if (!checkPass) throw new UnauthorizedException('wrong credentials');
-      if(!user.activo) throw new BadRequestException('user inactive')
+      if (!user.activo) throw new BadRequestException('user inactive');
       const result = {
         token: await this.authService.generateJwt(user),
         user,
@@ -99,6 +100,7 @@ export class UsersService {
     perPage: number,
     filterBy: string,
     sortBy: string,
+    relations?: boolean,
   ) {
     const conditions: FindOptionsWhere<UsuarioDto>[] = [];
 
@@ -119,8 +121,8 @@ export class UsersService {
         id: sortBy === 'ASC' ? 'ASC' : sortBy === 'DESC' ? 'DESC' : 'DESC',
       },
       relations: {
-        usuario_carga: true,
-        pericia: true,
+        usuario_carga: relations !== undefined ? relations : true,
+        pericia: relations !== undefined ? relations : true,
       },
       select: {
         id: true,
@@ -168,7 +170,10 @@ export class UsersService {
 
   async update(id: number, user: Partial<UsuarioDto>) {
     try {
-      if(user.contrasenia) user.contrasenia = await this.authService.hashPassword(user.contrasenia)
+      if (user.contrasenia)
+        user.contrasenia = await this.authService.hashPassword(
+          user.contrasenia,
+        );
       const oldUser = await this.userRepo.findOne({ where: { id: id } });
       if (!oldUser) throw new NotFoundException('user not found');
       const mergeUser = await this.userRepo.merge(oldUser, user);

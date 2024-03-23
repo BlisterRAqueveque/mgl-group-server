@@ -10,13 +10,64 @@ import {
   FindOptionsOrder,
   FindManyOptions,
 } from 'typeorm';
+import { AseguradorasService } from '../aseguradoras/aseguradoras.service';
+import { TipoSiniestrosService } from '../tipo-siniestros/tipo-siniestros.service';
+import { UsersService } from 'src/users.module/users/users.service';
 
 @Injectable()
 export class PericiasService {
   constructor(
     @InjectRepository(PericiaEntity)
     private readonly periciaRepo: Repository<PericiaDto>,
+    private readonly aseguradoraService: AseguradorasService,
+    private readonly tipoSiniestroService: TipoSiniestrosService,
+    private readonly verificadorService: UsersService,
   ) {}
+
+  /** @description Obtenemos el formato de las entidades relacionadas a la pericia */
+  async getFormFormat() {
+    try {
+      const aseguradoras = (
+        await this.aseguradoraService.getAllFilter(
+          undefined,
+          undefined,
+          undefined,
+          true,
+          undefined,
+          undefined,
+          'ASC',
+          undefined,
+          undefined,
+          false,
+        )
+      ).entities;
+      const tipos = (
+        await this.tipoSiniestroService.getAllFilter(
+          undefined,
+          undefined,
+          true,
+          undefined,
+          undefined,
+          'ASC',
+          undefined,
+          undefined,
+          false,
+        )
+      ).entities;
+      const verificadores = (
+        await this.verificadorService.getAllFilter(
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          false,
+        )
+      ).entities;
+      return { aseguradoras, tipos, verificadores };
+    } catch (e: any) {
+      throw new HttpException(e.message, e.status);
+    }
+  }
 
   /** @description Obtenemos un paginator para traer la información, junto con un filtro */
   async getAllFilter(
@@ -76,6 +127,8 @@ export class PericiasService {
         relations: {
           usuario_carga: relations !== undefined ? relations : true,
           verificador: relations !== undefined ? relations : true,
+          tipo_siniestro: relations !== undefined ? relations : true,
+          aseguradora: relations !== undefined ? relations : true,
         },
         select: {
           usuario_carga: {
@@ -92,12 +145,6 @@ export class PericiasService {
             apellido: true,
             tel: true,
           },
-          id: true,
-          activo: true,
-          fecha_creado: true,
-          n_siniestro: true,
-          n_denuncia: true,
-          nombre_asegurado: true,
         },
       };
       const [entities, count] =

@@ -9,6 +9,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AseguradoraEntity } from './aseguradoras/aseguradoras.entity';
 import { PericiaEntity } from './pericias/pericias.entity';
 import { TipoSiniestroEntity } from './tipo-siniestros/tipo-siniestros.entity';
+import { UsersModule } from 'src/users.module/users.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { TipoSiniestroEntity } from './tipo-siniestros/tipo-siniestros.entity';
       PericiaEntity,
       TipoSiniestroEntity,
     ]),
+    UsersModule,
   ],
   controllers: [
     PericiasController,
