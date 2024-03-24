@@ -56,6 +56,7 @@ export class PericiasService {
       ).entities;
       const verificadores = (
         await this.verificadorService.getAllFilter(
+          true,
           undefined,
           undefined,
           undefined,
@@ -212,6 +213,19 @@ export class PericiasService {
       return result;
     } catch (e: any) {
       console.log(e);
+      throw new HttpException(e.message, e.status);
+    }
+  }
+
+  /** @description Realiza la edición de la entidad */
+  async update(id: number, pericia: Partial<PericiaDto>) {
+    try {
+      const entity = await this.periciaRepo.findOne({ where: { id: id } });
+      const merge = await this.periciaRepo.merge(entity, pericia);
+      const result = await this.periciaRepo.save(merge);
+      return result;
+    } catch (e: any) {
+      console.log(e)
       throw new HttpException(e.message, e.status);
     }
   }

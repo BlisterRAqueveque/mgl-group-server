@@ -62,6 +62,7 @@ export class UsersController {
   /** @description Retorna la lista de usuarios, cual paginator o todos, en caso de ser necesario. */
   @Get()
   async getAllFilter(
+    @Query('activo') activo: boolean,
     @Query('page') page: number,
     @Query('perPage') perPage: number,
     @Query('filterBy') filterBy: string,
@@ -69,6 +70,7 @@ export class UsersController {
     @Res() res: Response,
   ) {
     const result = await this.userService.getAllFilter(
+      activo,
       page,
       perPage,
       filterBy,

@@ -5,7 +5,9 @@ import {
   Get,
   HttpStatus,
   Param,
+  ParseUUIDPipe,
   Post,
+  Put,
   Query,
   Res,
 } from '@nestjs/common';
@@ -92,5 +94,19 @@ export class PericiasController {
       result,
       msg: 'Approved',
     });
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id') id: number,
+    @Body() pericia: Partial<PericiaDto>,
+    @Res() res: Response,
+  ) {
+    const result = await this.periciaService.update(id, pericia)
+    res.status(HttpStatus.OK).json({
+      ok: true,
+      result,
+      msg: 'Approved'
+    })
   }
 }
