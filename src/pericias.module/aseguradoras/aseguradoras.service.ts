@@ -160,4 +160,18 @@ export class AseguradorasService {
       throw new HttpException(e.message, e.status);
     }
   }
+
+  async getCountAseguradoras(): Promise<{ activos: number; inactivos: number }> {
+    try {
+      const activos = await this.aseguradoraRepo.count({
+        where: { activo: true },
+      });
+      const inactivos = await this.aseguradoraRepo.count({
+        where: { activo: false },
+      });
+      return { activos, inactivos };
+    } catch (e: any) {
+      throw new HttpException(e.message, e.status);
+    }
+  }
 }

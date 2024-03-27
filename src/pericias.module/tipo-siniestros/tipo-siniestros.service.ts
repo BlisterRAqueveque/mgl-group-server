@@ -152,4 +152,18 @@ export class TipoSiniestrosService {
       throw new HttpException(e.message, e.status)
     }
   }
+
+  async getCountTipoSiniestros(): Promise<{ activos: number; inactivos: number }> {
+    try {
+      const activos = await this.tipoSiniestroRepo.count({
+        where: { activo: true },
+      });
+      const inactivos = await this.tipoSiniestroRepo.count({
+        where: { activo: false },
+      });
+      return { activos, inactivos };
+    } catch (e: any) {
+      throw new HttpException(e.message, e.status);
+    }
+  }
 }

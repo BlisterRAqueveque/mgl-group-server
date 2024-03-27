@@ -10,6 +10,14 @@ import { AseguradoraEntity } from './aseguradoras/aseguradoras.entity';
 import { PericiaEntity } from './pericias/pericias.entity';
 import { TipoSiniestroEntity } from './tipo-siniestros/tipo-siniestros.entity';
 import { UsersModule } from 'src/users.module/users.module';
+import { InformesController } from './informes/informes.controller';
+import { InformesService } from './informes/informes.service';
+import { AdjuntosService } from './adjuntos/adjuntos.service';
+import { AdjuntosController } from './adjuntos/adjuntos.controller';
+import { InformeEntity } from './informes/informes.entity';
+import { AdjuntoEntity } from './adjuntos/adjuntos.entity';
+import { MulterModule } from '@nestjs/platform-express';
+import { saveImagesToStorage } from 'src/helpers/image-storage';
 
 @Module({
   imports: [
@@ -17,14 +25,30 @@ import { UsersModule } from 'src/users.module/users.module';
       AseguradoraEntity,
       PericiaEntity,
       TipoSiniestroEntity,
+      InformeEntity,
+      AdjuntoEntity,
     ]),
     UsersModule,
+    MulterModule.register({
+      dest: './uploads',
+      fileFilter: saveImagesToStorage('adjuntos').fileFilter,
+      storage: saveImagesToStorage('adjuntos').storage,
+    }),
   ],
   controllers: [
     PericiasController,
     AseguradorasController,
     TipoSiniestrosController,
+    InformesController,
+    AdjuntosController,
   ],
-  providers: [PericiasService, AseguradorasService, TipoSiniestrosService],
+  providers: [
+    PericiasService,
+    AseguradorasService,
+    TipoSiniestrosService,
+    InformesService,
+    AdjuntosService,
+  ],
+  exports: [PericiasService, AseguradorasService, TipoSiniestrosService],
 })
 export class PericiasModuleModule {}

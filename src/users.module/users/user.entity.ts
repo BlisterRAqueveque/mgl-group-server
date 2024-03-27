@@ -1,4 +1,5 @@
 import { AseguradoraEntity } from 'src/pericias.module/aseguradoras/aseguradoras.entity';
+import { InformeEntity } from 'src/pericias.module/informes/informes.entity';
 import { PericiaEntity } from 'src/pericias.module/pericias/pericias.entity';
 import { TipoSiniestroEntity } from 'src/pericias.module/tipo-siniestros/tipo-siniestros.entity';
 import {
@@ -73,4 +74,7 @@ export class UsuarioEntity {
     (aseguradora) => aseguradora.usuario_carga,
   )
   aseguradora: AseguradoraEntity[];
+
+  @OneToMany(() => InformeEntity, (informes) => informes.usuario_carga)
+  informes: InformeEntity[]
 }

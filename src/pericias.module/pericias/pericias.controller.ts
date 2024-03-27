@@ -34,7 +34,7 @@ export class PericiasController {
     @Query('id') id: number,
     @Query('activo') activo: boolean,
     @Query('fecha_creado') fecha_creado: Date,
-    @Query('verificador') verificador: string,
+    @Query('verificador') verificador: string | number,
     @Query('n_siniestro') n_siniestro: number,
     @Query('n_denuncia') n_denuncia: number,
     @Query('nombre_asegurado') nombre_asegurado: string,
@@ -45,6 +45,7 @@ export class PericiasController {
     @Query('relations') relations: boolean,
     @Res() res: Response,
   ) {
+    console.log(verificador)
     const result = await this.periciaService.getAllFilter(
       id,
       activo,

@@ -1,6 +1,7 @@
 import { UsuarioDto } from 'src/users.module/users/user.dto';
 import { AseguradoraDto } from '../aseguradoras/aseguradoras.dto';
 import { TipoSiniestroDto } from '../tipo-siniestros/tipo-siniestro.dto';
+import { InformeDto } from '../informes/informes.dto';
 
 export class PericiaDto {
   id: number;
@@ -24,4 +25,6 @@ export class PericiaDto {
 
   tipo_siniestro: TipoSiniestroDto;
   verificador: UsuarioDto;
+
+  informe: InformeDto;
 }

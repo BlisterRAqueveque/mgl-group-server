@@ -186,4 +186,18 @@ export class UsersService {
       throw new HttpException(e.message, e.status);
     }
   }
+
+  async getCountUsuarios(): Promise<{ activos: number; inactivos: number }> {
+    try {
+      const activos = await this.userRepo.count({
+        where: { activo: true },
+      });
+      const inactivos = await this.userRepo.count({
+        where: { activo: false },
+      });
+      return { activos, inactivos };
+    } catch (e: any) {
+      throw new HttpException(e.message, e.status);
+    }
+  }
 }

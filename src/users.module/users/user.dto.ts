@@ -2,6 +2,7 @@ import { AseguradoraDto } from 'src/pericias.module/aseguradoras/aseguradoras.dt
 import { PericiaDto } from 'src/pericias.module/pericias/pericias.dto';
 import { TipoSiniestroDto } from 'src/pericias.module/tipo-siniestros/tipo-siniestro.dto';
 import { Roles } from './user.entity';
+import { InformeDto } from 'src/pericias.module/informes/informes.dto';
 
 export class UsuarioDto {
   id: number;
@@ -26,4 +27,6 @@ export class UsuarioDto {
   tipo_siniestro: TipoSiniestroDto[];
 
   aseguradora: AseguradoraDto[];
+
+  informes: InformeDto[]
 }

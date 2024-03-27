@@ -5,10 +5,12 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { AseguradoraEntity } from '../aseguradoras/aseguradoras.entity';
 import { TipoSiniestroEntity } from '../tipo-siniestros/tipo-siniestros.entity';
+import { InformeEntity } from '../informes/informes.entity';
 
 @Entity('pericias')
 export class PericiaEntity {
@@ -42,7 +44,10 @@ export class PericiaEntity {
   @DeleteDateColumn()
   fecha_eliminado: Date;
 
-  @ManyToOne(() => UsuarioEntity, (usuario_carga) => usuario_carga.carga_pericia)
+  @ManyToOne(
+    () => UsuarioEntity,
+    (usuario_carga) => usuario_carga.carga_pericia,
+  )
   usuario_carga: UsuarioEntity;
   @ManyToOne(() => AseguradoraEntity, (aseguradora) => aseguradora.pericia)
   aseguradora: AseguradoraEntity;
@@ -53,4 +58,7 @@ export class PericiaEntity {
   tipo_siniestro: TipoSiniestroEntity;
   @ManyToOne(() => UsuarioEntity, (verificador) => verificador.pericia)
   verificador: UsuarioEntity;
+
+  @OneToOne(() => InformeEntity, (informe) => informe.pericia)
+  informe: InformeEntity;
 }

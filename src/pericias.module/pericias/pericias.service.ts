@@ -75,7 +75,7 @@ export class PericiasService {
     id: number,
     activo: boolean,
     fecha_creado: Date,
-    verificador: string,
+    verificador: string | number,
     n_siniestro: number,
     n_denuncia: number,
     nombre_asegurado: string,
@@ -86,12 +86,13 @@ export class PericiasService {
     relations?: boolean,
   ) {
     try {
+      console.log(verificador)
       const skip = page !== undefined ? (page - 1) * perPage : 0;
 
       //! Set the conditions:
       const conditions: FindOptionsWhere<PericiaDto> = {};
       if (id) conditions.id = id;
-      if (activo) conditions.activo = activo;
+      if (activo) conditions.abierta = activo;
       if (fecha_creado) {
         const date = new Date(fecha_creado);
         date.setDate(date.getDate() + 1);
@@ -102,6 +103,7 @@ export class PericiasService {
           { username: Like(`%${verificador}%`) },
           { nombre: Like(`%${verificador}%`) },
           { apellido: Like(`%${verificador}%`) },
+          { id: verificador as number }
         ];
       if (n_siniestro) conditions.n_siniestro = Like(n_siniestro);
       if (n_denuncia) conditions.n_denuncia = Like(n_denuncia);
@@ -225,7 +227,24 @@ export class PericiasService {
       const result = await this.periciaRepo.save(merge);
       return result;
     } catch (e: any) {
-      console.log(e)
+      console.log(e);
+      throw new HttpException(e.message, e.status);
+    }
+  }
+
+  async getCountPericias(): Promise<{
+    abiertas: number;
+    cerradas: number;
+  }> {
+    try {
+      const abiertas = await this.periciaRepo.count({
+        where: { abierta: true },
+      });
+      const cerradas = await this.periciaRepo.count({
+        where: { abierta: false },
+      });
+      return { abiertas, cerradas };
+    } catch (e: any) {
       throw new HttpException(e.message, e.status);
     }
   }
