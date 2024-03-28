@@ -23,7 +23,7 @@ export class InformesController {
     @Body() body: any,
     @Res() res: Response,
   ) {
-    const informe = body.form as InformeDto;
+    const informe = JSON.parse(body.form) as InformeDto;
     informe.adjuntos.forEach((a, i) => {
       a.adjunto = files[i].filename;
     });

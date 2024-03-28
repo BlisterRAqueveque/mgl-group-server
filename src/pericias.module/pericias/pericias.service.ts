@@ -86,7 +86,6 @@ export class PericiasService {
     relations?: boolean,
   ) {
     try {
-      console.log(verificador)
       const skip = page !== undefined ? (page - 1) * perPage : 0;
 
       //! Set the conditions:
@@ -103,7 +102,7 @@ export class PericiasService {
           { username: Like(`%${verificador}%`) },
           { nombre: Like(`%${verificador}%`) },
           { apellido: Like(`%${verificador}%`) },
-          { id: verificador as number }
+          { id: verificador as number },
         ];
       if (n_siniestro) conditions.n_siniestro = Like(n_siniestro);
       if (n_denuncia) conditions.n_denuncia = Like(n_denuncia);
@@ -118,8 +117,9 @@ export class PericiasService {
       const order: FindOptionsOrder<PericiaDto> = sortBy
         ? {
             id: sortBy === 'ASC' ? 'ASC' : sortBy === 'DESC' ? 'DESC' : 'DESC',
+            informe: { adjuntos: { index: 'ASC' } },
           }
-        : { nombre_asegurado: 'ASC' };
+        : { nombre_asegurado: 'ASC', informe: { adjuntos: { index: 'ASC' } } };
 
       //! Creates the finding options
       const findOptions: FindManyOptions<PericiaDto> = {
@@ -132,6 +132,7 @@ export class PericiasService {
           verificador: relations !== undefined ? relations : true,
           tipo_siniestro: relations !== undefined ? relations : true,
           aseguradora: relations !== undefined ? relations : true,
+          informe: { adjuntos: relations !== undefined ? relations : true },
         },
         select: {
           usuario_carga: {

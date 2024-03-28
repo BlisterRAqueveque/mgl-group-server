@@ -46,7 +46,9 @@ export class InformeEntity {
   text_anio: string;
   @CreateDateColumn()
   fecha_carga: Date;
-  @OneToMany(() => AdjuntoEntity, (adjuntos) => adjuntos.informe)
+  @OneToMany(() => AdjuntoEntity, (adjuntos) => adjuntos.informe, {
+    cascade: true,
+  })
   adjuntos: AdjuntoEntity[];
   @ManyToOne(() => UsuarioEntity, (usuario_carga) => usuario_carga.informes)
   usuario_carga: UsuarioEntity;
