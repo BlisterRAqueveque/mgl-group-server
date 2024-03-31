@@ -96,6 +96,7 @@ export class UsersService {
   /** @description Retorna todos los usuarios. Funciona como paginator en caso de que se envíe undefined
    * pages y perPage */
   async getAllFilter(
+    id: number,
     activo: boolean,
     page: number,
     perPage: number,
@@ -104,6 +105,8 @@ export class UsersService {
     relations?: boolean,
   ) {
     const conditions: FindOptionsWhere<UsuarioDto>[] = [];
+
+    if (id) conditions.push({ id: id });
 
     if (activo) conditions.push({ activo: activo });
 

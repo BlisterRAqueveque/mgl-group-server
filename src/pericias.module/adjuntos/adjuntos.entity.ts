@@ -5,9 +5,9 @@ import { InformeEntity } from '../informes/informes.entity';
 export class AdjuntoEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
-  @Column('text')
+  @Column('text', { nullable: true })
   adjunto: string;
-  @Column('text')
+  @Column('text', { nullable: true })
   descripcion: string;
   @Column('int', { default: 0 })
   index: number;

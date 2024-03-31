@@ -13,10 +13,10 @@ export class AppService {
     private readonly userService: UsersService,
   ) {}
 
-  async getDashboard() {
+  async getDashboard(id: number) {
     try {
       const aseguradoras = await this.aseguradoraService.getCountAseguradoras();
-      const pericias = await this.periciaService.getCountPericias();
+      const pericias = await this.periciaService.getCountPericias(id);
       const tipoSiniestro = await this.tipoSiniestro.getCountTipoSiniestros();
       const usuarios = await this.userService.getCountUsuarios();
       return { aseguradoras, pericias, tipoSiniestro, usuarios };

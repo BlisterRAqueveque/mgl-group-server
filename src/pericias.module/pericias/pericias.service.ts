@@ -56,6 +56,7 @@ export class PericiasService {
       ).entities;
       const verificadores = (
         await this.verificadorService.getAllFilter(
+          undefined,
           true,
           undefined,
           undefined,
@@ -107,7 +108,7 @@ export class PericiasService {
       if (n_siniestro) conditions.n_siniestro = Like(n_siniestro);
       if (n_denuncia) conditions.n_denuncia = Like(n_denuncia);
       if (nombre_asegurado)
-        conditions.nombre_asegurado = Like(nombre_asegurado);
+        conditions.nombre_asegurado = Like(`%${nombre_asegurado}%`);
       if (usuario_carga)
         conditions.usuario_carga = [
           { nombre: Like(`%${usuario_carga}%`) },
@@ -170,6 +171,7 @@ export class PericiasService {
           aseguradora: true,
           tipo_siniestro: true,
           verificador: true,
+          informe: { adjuntos: true },
         },
         select: {
           usuario_carga: {
@@ -233,16 +235,16 @@ export class PericiasService {
     }
   }
 
-  async getCountPericias(): Promise<{
+  async getCountPericias(id: number): Promise<{
     abiertas: number;
     cerradas: number;
   }> {
     try {
       const abiertas = await this.periciaRepo.count({
-        where: { abierta: true },
+        where: { abierta: true, verificador: { id: id } },
       });
       const cerradas = await this.periciaRepo.count({
-        where: { abierta: false },
+        where: { abierta: false, verificador: { id: id } },
       });
       return { abiertas, cerradas };
     } catch (e: any) {

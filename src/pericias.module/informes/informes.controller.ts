@@ -1,8 +1,11 @@
 import {
   Body,
   Controller,
+  Delete,
   HttpStatus,
+  Param,
   Post,
+  Put,
   Res,
   UploadedFiles,
   UseInterceptors,
@@ -28,6 +31,16 @@ export class InformesController {
       a.adjunto = files[i].filename;
     });
     const result = await this.informeService.insert(informe);
+    res.status(HttpStatus.OK).json({
+      ok: true,
+      result,
+      msg: 'Approved',
+    });
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: number, @Res() res: Response) {
+    const result = await this.informeService.delete(id);
     res.status(HttpStatus.OK).json({
       ok: true,
       result,

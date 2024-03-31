@@ -45,7 +45,6 @@ export class PericiasController {
     @Query('relations') relations: boolean,
     @Res() res: Response,
   ) {
-    console.log(verificador)
     const result = await this.periciaService.getAllFilter(
       id,
       activo,

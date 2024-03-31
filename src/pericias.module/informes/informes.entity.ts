@@ -16,38 +16,41 @@ import { PericiaEntity } from '../pericias/pericias.entity';
 export class InformeEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
-  @Column('text')
+  @Column('text', { nullable: true })
   tipo_siniestro: string;
-  @Column('text')
+  @Column('text', { nullable: true })
   n_siniestro: string;
-  @Column('text')
+  @Column('text', { nullable: true })
   n_denuncia: string;
-  @Column('text')
+  @Column('text', { nullable: true })
   nombre_asegurado: string;
-  @Column('text')
+  @Column('text', { nullable: true })
   dir_asegurado: string;
-  @Column('text')
+  @Column('text', { nullable: true })
   tel_asegurado: string;
-  @Column('text')
+  @Column('text', { nullable: true })
   veh_asegurado: string;
-  @Column('text')
+  @Column('text', { nullable: true })
   patente_asegurado: string;
-  @Column('text')
+  @Column('text', { nullable: true })
   hecho: string;
-  @Column('text')
+  @Column('text', { nullable: true })
   n_poliza: string;
-  @Column('text')
+  @Column('text', { nullable: true })
   tipo_cobertura: string;
-  @Column('text')
+  @Column('text', { nullable: true })
   amp_denuncia: string;
-  @Column('text')
+  @Column('text', { nullable: true })
   conclusion: string;
-  @Column('text')
+  @Column('text', { nullable: true })
   text_anio: string;
   @CreateDateColumn()
   fecha_carga: Date;
+  @Column('text', { nullable: true })
+  relevamiento: string;
   @OneToMany(() => AdjuntoEntity, (adjuntos) => adjuntos.informe, {
     cascade: true,
+    onDelete: 'SET NULL',
   })
   adjuntos: AdjuntoEntity[];
   @ManyToOne(() => UsuarioEntity, (usuario_carga) => usuario_carga.informes)

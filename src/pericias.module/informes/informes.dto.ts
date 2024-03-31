@@ -22,4 +22,5 @@ export class InformeDto {
   adjuntos: AdjuntoDto[];
   usuario_carga: UsuarioDto;
   pericia: PericiaDto;
+  relevamiento: string;
 }

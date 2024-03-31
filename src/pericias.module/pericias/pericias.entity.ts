@@ -16,7 +16,7 @@ import { InformeEntity } from '../informes/informes.entity';
 export class PericiaEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
-  @Column('datetime')
+  @Column('datetime', { nullable: true })
   fecha_asignado: Date;
   @Column('int', { default: 0 })
   n_siniestro: number;
