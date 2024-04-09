@@ -1,6 +1,7 @@
 import { UsuarioDto } from 'src/users.module/users/user.dto';
 import { AdjuntoDto } from '../adjuntos/adjuntos.dto';
 import { PericiaDto } from '../pericias/pericias.dto';
+import { TerceroDto } from '../terceros/terceros.dto';
 
 export class InformeDto {
   id: number;
@@ -23,4 +24,7 @@ export class InformeDto {
   usuario_carga: UsuarioDto;
   pericia: PericiaDto;
   relevamiento: string;
+  terceros: TerceroDto[];
+  conductor: string;
+  dni_conductor: string;
 }

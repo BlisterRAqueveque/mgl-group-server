@@ -18,6 +18,9 @@ import { InformeEntity } from './informes/informes.entity';
 import { AdjuntoEntity } from './adjuntos/adjuntos.entity';
 import { MulterModule } from '@nestjs/platform-express';
 import { saveImagesToStorage } from 'src/helpers/image-storage';
+import { TercerosController } from './terceros/terceros.controller';
+import { TercerosService } from './terceros/terceros.service';
+import { TerceroEntity } from './terceros/terceros.entity';
 
 @Module({
   imports: [
@@ -27,6 +30,7 @@ import { saveImagesToStorage } from 'src/helpers/image-storage';
       TipoSiniestroEntity,
       InformeEntity,
       AdjuntoEntity,
+      TerceroEntity,
     ]),
     UsersModule,
     MulterModule.register({
@@ -41,6 +45,7 @@ import { saveImagesToStorage } from 'src/helpers/image-storage';
     TipoSiniestrosController,
     InformesController,
     AdjuntosController,
+    TercerosController,
   ],
   providers: [
     PericiasService,
@@ -48,6 +53,7 @@ import { saveImagesToStorage } from 'src/helpers/image-storage';
     TipoSiniestrosService,
     InformesService,
     AdjuntosService,
+    TercerosService,
   ],
   exports: [PericiasService, AseguradorasService, TipoSiniestrosService],
 })

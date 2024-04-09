@@ -5,12 +5,14 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { AseguradoraEntity } from '../aseguradoras/aseguradoras.entity';
 import { TipoSiniestroEntity } from '../tipo-siniestros/tipo-siniestros.entity';
 import { InformeEntity } from '../informes/informes.entity';
+import { TerceroEntity } from '../terceros/terceros.entity';
 
 @Entity('pericias')
 export class PericiaEntity {
@@ -34,6 +36,10 @@ export class PericiaEntity {
   veh_asegurado: string;
   @Column('varchar', { length: 250, nullable: true })
   patente_asegurado: string;
+  @Column('varchar', { length: 250, nullable: true })
+  conductor: string;
+  @Column('varchar', { length: 250, nullable: true })
+  dni_conductor: string;
   @Column('bool', { default: true })
   abierta: boolean;
   @Column('bool', { default: true })
@@ -61,4 +67,9 @@ export class PericiaEntity {
 
   @OneToOne(() => InformeEntity, (informe) => informe.pericia)
   informe: InformeEntity;
+
+  @OneToMany(() => TerceroEntity, (terceros) => terceros.pericia, {
+    cascade: true,
+  })
+  terceros: TerceroEntity[];
 }

@@ -133,7 +133,11 @@ export class PericiasService {
           verificador: relations !== undefined ? relations : true,
           tipo_siniestro: relations !== undefined ? relations : true,
           aseguradora: relations !== undefined ? relations : true,
-          informe: { adjuntos: relations !== undefined ? relations : true },
+          terceros: relations !== undefined ? relations : true,
+          informe: {
+            adjuntos: relations !== undefined ? relations : true,
+            terceros: relations !== undefined ? relations : true,
+          },
         },
         select: {
           usuario_carga: {
@@ -170,8 +174,9 @@ export class PericiasService {
           usuario_carga: true,
           aseguradora: true,
           tipo_siniestro: true,
+          terceros: true,
           verificador: true,
-          informe: { adjuntos: true },
+          informe: { adjuntos: true, terceros: true },
         },
         select: {
           usuario_carga: {

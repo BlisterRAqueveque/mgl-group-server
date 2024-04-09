@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 import { AdjuntoEntity } from '../adjuntos/adjuntos.entity';
 import { PericiaEntity } from '../pericias/pericias.entity';
+import { TerceroEntity } from '../terceros/terceros.entity';
 
 @Entity('informes')
 export class InformeEntity {
@@ -58,4 +59,13 @@ export class InformeEntity {
   @OneToOne(() => PericiaEntity, (pericia) => pericia.informe)
   @JoinColumn()
   pericia: PericiaEntity;
+  @OneToMany(() => TerceroEntity, (terceros) => terceros.informe, {
+    cascade: true,
+  })
+  terceros: TerceroEntity[];
+
+  @Column('varchar', { length: 250 })
+  conductor: string
+  @Column('varchar', { length: 250 })
+  dni_conductor: string
 }

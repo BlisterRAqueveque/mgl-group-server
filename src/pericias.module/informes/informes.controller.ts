@@ -47,4 +47,36 @@ export class InformesController {
       msg: 'Approved',
     });
   }
+
+  @Put(':id')
+  @UseInterceptors(FilesInterceptor('files'))
+  async update(
+    @Param('id') id: number,
+    @UploadedFiles() files: Express.Multer.File[],
+    @Body() body: any,
+    @Res() res: Response,
+  ) {
+    try {
+      const form = JSON.parse(body.form) as InformeDto;
+      let i = 0;
+      form.adjuntos.forEach((a) => {
+        if (!a.id) {
+          a.adjunto = files[i].filename;
+          i++;
+        }
+      });
+      const result = await this.informeService.update(id, form);
+      res.status(HttpStatus.OK).json({
+        ok: true,
+        result,
+        msg: 'Approved',
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(HttpStatus.BAD_REQUEST).json({
+        ok: true,
+        msg: 'Rejected',
+      });
+    }
+  }
 }
