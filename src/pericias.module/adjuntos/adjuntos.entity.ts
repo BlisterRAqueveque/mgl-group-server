@@ -9,7 +9,7 @@ export class AdjuntoEntity {
   adjunto: string;
   @Column('text', { nullable: true })
   descripcion: string;
-  @Column('int', { default: 0 })
+  @Column('bigint', { default: 0 })
   index: number;
 
   @ManyToOne(() => InformeEntity, (informe) => informe.adjuntos)
