@@ -47,6 +47,7 @@ export class InformesService {
       });
       if (!entity) throw new NotFoundException('Entity not found');
       const oldImages = [...entity.adjuntos];
+      entity.adjuntos = [];
       const merge = await this.repository.merge(entity, body);
       const result = await this.repository.save(merge);
       if (result) {

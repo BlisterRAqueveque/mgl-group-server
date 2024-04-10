@@ -5,6 +5,7 @@ export class AdjuntoDto {
   adjunto: string;
   descripcion: string;
   index: number;
+  dot: string;
 
   informe: InformeDto;
 }

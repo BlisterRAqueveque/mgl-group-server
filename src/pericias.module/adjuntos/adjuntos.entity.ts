@@ -11,6 +11,8 @@ export class AdjuntoEntity {
   descripcion: string;
   @Column('bigint', { default: 0 })
   index: number;
+  @Column('varchar', { length: 250, nullable: true })
+  dot: string;
 
   @ManyToOne(() => InformeEntity, (informe) => informe.adjuntos)
   informe: InformeEntity;
