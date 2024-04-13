@@ -27,9 +27,19 @@ export class InformesController {
     @Res() res: Response,
   ) {
     const informe = JSON.parse(body.form) as InformeDto;
-    informe.adjuntos.forEach((a, i) => {
+    let i = 0;
+    informe.adjuntos.forEach((a) => {
       a.adjunto = files[i].filename;
+      i++;
     });
+    if (informe.terceros) {
+      informe.terceros.forEach((t, i) => {
+        t.adjuntos.forEach((a) => {
+          a.adjunto = files[i].filename;
+          i++;
+        });
+      });
+    }
     const result = await this.informeService.insert(informe);
     res.status(HttpStatus.OK).json({
       ok: true,
@@ -65,6 +75,16 @@ export class InformesController {
           i++;
         }
       });
+      if (form.terceros) {
+        form.terceros.forEach((t) => {
+          t.adjuntos.forEach((a) => {
+            if (!a.id) {
+              a.adjunto = files[i].filename;
+              i++;
+            }
+          });
+        });
+      }
       const result = await this.informeService.update(id, form);
       res.status(HttpStatus.OK).json({
         ok: true,

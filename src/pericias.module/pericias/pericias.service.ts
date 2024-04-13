@@ -118,7 +118,10 @@ export class PericiasService {
       const order: FindOptionsOrder<PericiaDto> = sortBy
         ? {
             id: sortBy === 'ASC' ? 'ASC' : sortBy === 'DESC' ? 'DESC' : 'DESC',
-            informe: { adjuntos: { index: 'ASC' } },
+            informe: {
+              adjuntos: { index: 'ASC' },
+              terceros: { adjuntos: { index: 'ASC' } },
+            },
           }
         : { nombre_asegurado: 'ASC', informe: { adjuntos: { index: 'ASC' } } };
 
@@ -136,7 +139,7 @@ export class PericiasService {
           terceros: relations !== undefined ? relations : true,
           informe: {
             adjuntos: relations !== undefined ? relations : true,
-            terceros: relations !== undefined ? relations : true,
+            terceros: { adjuntos: relations !== undefined ? relations : true },
           },
         },
         select: {
@@ -176,7 +179,7 @@ export class PericiasService {
           tipo_siniestro: true,
           terceros: true,
           verificador: true,
-          informe: { adjuntos: true, terceros: true },
+          informe: { adjuntos: true, terceros: { adjuntos: true } },
         },
         select: {
           usuario_carga: {
