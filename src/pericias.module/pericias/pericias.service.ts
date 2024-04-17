@@ -118,12 +118,10 @@ export class PericiasService {
       const order: FindOptionsOrder<PericiaDto> = sortBy
         ? {
             id: sortBy === 'ASC' ? 'ASC' : sortBy === 'DESC' ? 'DESC' : 'DESC',
-            informe: {
-              adjuntos: { index: 'ASC' },
-              terceros: { adjuntos: { index: 'ASC' } },
-            },
           }
-        : { nombre_asegurado: 'ASC', informe: { adjuntos: { index: 'ASC' } } };
+        : {
+            nombre_asegurado: 'ASC',
+          };
 
       //! Creates the finding options
       const findOptions: FindManyOptions<PericiaDto> = {

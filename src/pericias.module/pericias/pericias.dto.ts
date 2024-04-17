@@ -17,6 +17,9 @@ export class PericiaDto {
   patente_asegurado: string;
   conductor: string;
   dni_conductor: string;
+  anio: number;
+  poliza: string;
+  cobertura: string;
   abierta: boolean;
   activo: boolean;
 

@@ -27,6 +27,12 @@ export class TerceroEntity {
   amp_denuncia: string;
   @Column('varchar', { length: 250, nullable: true })
   aseguradora: string;
+  @Column('bigint', { nullable: true })
+  anio: number;
+  @Column('text', { nullable: true })
+  poliza: string;
+  @Column('text', { nullable: true })
+  cobertura: string;
 
   @ManyToOne(() => PericiaEntity, (pericia) => pericia.terceros)
   pericia: PericiaEntity;

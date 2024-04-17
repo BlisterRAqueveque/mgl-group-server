@@ -11,6 +11,9 @@ export class TerceroDto {
   patente: string;
   amp_denuncia: string;
   aseguradora: string;
+  anio: number;
+  poliza: string;
+  cobertura: string;
 
   pericia: PericiaDto;
   informe: InformeDto;

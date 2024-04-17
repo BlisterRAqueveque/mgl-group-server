@@ -40,6 +40,12 @@ export class PericiaEntity {
   conductor: string;
   @Column('varchar', { length: 250, nullable: true })
   dni_conductor: string;
+  @Column('bigint', { nullable: true })
+  anio: number;
+  @Column('text', { nullable: true })
+  poliza: string;
+  @Column('text', { nullable: true })
+  cobertura: string;
   @Column('bool', { default: true })
   abierta: boolean;
   @Column('bool', { default: true })
