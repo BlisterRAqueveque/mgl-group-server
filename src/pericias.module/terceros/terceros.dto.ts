@@ -9,6 +9,7 @@ export class TerceroDto {
   tel: string;
   veh: string;
   patente: string;
+  mail_tercero: string;
   amp_denuncia: string;
   aseguradora: string;
   anio: number;

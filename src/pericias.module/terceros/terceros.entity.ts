@@ -24,6 +24,8 @@ export class TerceroEntity {
   @Column('text', { nullable: true })
   patente: string;
   @Column('text', { nullable: true })
+  mail_tercero: string;
+  @Column('text', { nullable: true })
   amp_denuncia: string;
   @Column('varchar', { length: 250, nullable: true })
   aseguradora: string;

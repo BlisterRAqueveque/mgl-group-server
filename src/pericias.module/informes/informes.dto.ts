@@ -11,6 +11,7 @@ export class InformeDto {
   nombre_asegurado: string;
   dir_asegurado: string;
   tel_asegurado: string;
+  mail_asegurado: string;
   veh_asegurado: string;
   patente_asegurado: string;
   hecho: string;

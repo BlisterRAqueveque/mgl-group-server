@@ -30,6 +30,8 @@ export class InformeEntity {
   @Column('text', { nullable: true })
   tel_asegurado: string;
   @Column('text', { nullable: true })
+  mail_asegurado: string;
+  @Column('text', { nullable: true })
   veh_asegurado: string;
   @Column('text', { nullable: true })
   patente_asegurado: string;
@@ -65,7 +67,7 @@ export class InformeEntity {
   terceros: TerceroEntity[];
 
   @Column('varchar', { length: 250 })
-  conductor: string
+  conductor: string;
   @Column('varchar', { length: 250 })
-  dni_conductor: string
+  dni_conductor: string;
 }
