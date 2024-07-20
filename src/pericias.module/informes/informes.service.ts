@@ -1,12 +1,18 @@
 import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { InformeEntity } from './informes.entity';
-import { Repository } from 'typeorm';
+import {
+  Between,
+  FindManyOptions,
+  FindOptionsWhere,
+  Repository,
+} from 'typeorm';
 import { InformeDto } from './informes.dto';
 import { unlink } from 'fs/promises';
 import * as path from 'path';
 import { AdjuntosService } from '../adjuntos/adjuntos.service';
 import { AdjuntoDto } from '../adjuntos/adjuntos.dto';
+import { UsersService } from 'src/users.module/users/users.service';
 
 @Injectable()
 export class InformesService {
@@ -14,6 +20,7 @@ export class InformesService {
     @InjectRepository(InformeEntity)
     private readonly repository: Repository<InformeDto>,
     private readonly adjuntoService: AdjuntosService,
+    private readonly userService: UsersService,
   ) {}
 
   async insert(informe: InformeDto): Promise<InformeDto> {
@@ -34,7 +41,7 @@ export class InformesService {
       const result = await this.repository.remove(entity);
       return result;
     } catch (e: any) {
-      console.log(e);
+      console.error(e);
       throw new HttpException(e.message, e.status);
     }
   }
@@ -52,13 +59,12 @@ export class InformesService {
       const result = await this.repository.save(merge);
       if (result) {
         const deleteImages = this.compareList(oldImages, body.adjuntos);
-        console.log(deleteImages);
         this.deleteAdjuntos(deleteImages);
         return result;
       }
       return null;
     } catch (e: any) {
-      console.log(e);
+      console.error(e);
       throw new HttpException(e.message, e.status);
     }
   }
@@ -88,6 +94,31 @@ export class InformesService {
         );
       }
       await this.adjuntoService.delete(a.id);
+    }
+  }
+
+  async contarTotales(desde: string, hasta: string, usuario: number) {
+    try {
+      const conditions: FindOptionsWhere<InformeDto> = {};
+      if (desde && hasta)
+        conditions.fecha_terminado = Between(new Date(desde), new Date(hasta));
+      if (usuario) conditions.usuario_carga = { id: usuario };
+
+      const findOptions: FindManyOptions<InformeDto> = {
+        where: conditions,
+      };
+
+      const [result, count] = await this.repository.findAndCount(findOptions);
+
+      const data = await this.userService.getInformesUsuarios(
+        desde,
+        hasta,
+        usuario,
+      );
+      return { count, data };
+    } catch (e: any) {
+      console.error(e);
+      throw new HttpException(e.message, e.status);
     }
   }
 }

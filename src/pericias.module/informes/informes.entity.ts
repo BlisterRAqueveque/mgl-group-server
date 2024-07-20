@@ -51,6 +51,12 @@ export class InformeEntity {
   fecha_carga: Date;
   @Column('text', { nullable: true })
   relevamiento: string;
+  @Column('bool', { default: false })
+  terminado: boolean;
+  @Column('datetime', { nullable: true })
+  fecha_terminado: Date;
+  @Column('bool', { default: true })
+  corregido: boolean;
   @OneToMany(() => AdjuntoEntity, (adjuntos) => adjuntos.informe, {
     cascade: true,
     onDelete: 'SET NULL',

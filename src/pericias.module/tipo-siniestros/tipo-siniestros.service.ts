@@ -77,7 +77,7 @@ export class TipoSiniestrosService {
         await this.tipoSiniestroRepo.findAndCount(findOptions);
       return { entities, count };
     } catch (e: any) {
-      console.log(e);
+      console.error(e);
       throw new HttpException(e.message, e.activo);
     }
   }
@@ -101,7 +101,7 @@ export class TipoSiniestrosService {
       if (!entity) throw new NotFoundException('entity not found');
       return entity;
     } catch (e: any) {
-      console.log(e);
+      console.error(e);
       throw new HttpException(e.message, e.status);
     }
   }
@@ -116,7 +116,7 @@ export class TipoSiniestrosService {
       const result = await this.tipoSiniestroRepo.save(tipo);
       return result;
     } catch (e: any) {
-      console.log(e);
+      console.error(e);
       throw new HttpException(e.message, e.status);
     }
   }
@@ -131,7 +131,7 @@ export class TipoSiniestrosService {
       const result = await this.tipoSiniestroRepo.softRemove(entity);
       return result;
     } catch (e: any) {
-      console.log(e);
+      console.error(e);
       throw new HttpException(e.message, e.status);
     }
   }

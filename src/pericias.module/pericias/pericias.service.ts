@@ -1,4 +1,9 @@
-import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  HttpException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PericiaEntity } from './pericias.entity';
 import { PericiaDto } from './pericias.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,6 +14,8 @@ import {
   Like,
   FindOptionsOrder,
   FindManyOptions,
+  IsNull,
+  MoreThan,
 } from 'typeorm';
 import { AseguradorasService } from '../aseguradoras/aseguradoras.service';
 import { TipoSiniestrosService } from '../tipo-siniestros/tipo-siniestros.service';
@@ -81,10 +88,13 @@ export class PericiasService {
     n_denuncia: number,
     nombre_asegurado: string,
     usuario_carga: string,
+    informe: boolean,
+    limite: boolean,
     sortBy: string,
     page: number,
     perPage: number,
     relations?: boolean,
+    terminado?: boolean,
   ) {
     try {
       const skip = page !== undefined ? (page - 1) * perPage : 0;
@@ -115,13 +125,33 @@ export class PericiasService {
           { apellido: Like(`%${usuario_carga}%`) },
         ];
 
-      const order: FindOptionsOrder<PericiaDto> = sortBy
-        ? {
-            id: sortBy === 'ASC' ? 'ASC' : sortBy === 'DESC' ? 'DESC' : 'DESC',
-          }
-        : {
-            nombre_asegurado: 'ASC',
-          };
+      if (informe)
+        conditions.informe = [
+          { id: (informe as any) === '1' ? MoreThan(0) : IsNull() },
+        ];
+
+      if (terminado) {
+        conditions.informe = {
+          id: (informe as any) === '1' ? MoreThan(0) : IsNull(),
+          terminado: terminado,
+        };
+      }
+
+      if (limite) conditions.informe = [{ id: IsNull() }];
+      const order: FindOptionsOrder<PericiaDto> =
+        sortBy && !limite
+          ? {
+              id:
+                sortBy === 'ASC' ? 'ASC' : sortBy === 'DESC' ? 'DESC' : 'DESC',
+            }
+          : limite
+            ? {
+                fecha_asignado:
+                  sortBy === 'ASC' ? 'DESC' : sortBy === 'DESC' ? 'ASC' : 'ASC',
+              }
+            : {
+                nombre_asegurado: 'ASC',
+              };
 
       //! Creates the finding options
       const findOptions: FindManyOptions<PericiaDto> = {
@@ -161,7 +191,7 @@ export class PericiasService {
         await this.periciaRepo.findAndCount(findOptions);
       return { entities, count };
     } catch (e: any) {
-      console.log(e);
+      console.error(e);
       throw new HttpException(e.message, e.activo);
     }
   }
@@ -175,7 +205,7 @@ export class PericiasService {
           usuario_carga: true,
           aseguradora: true,
           tipo_siniestro: true,
-          terceros: true,
+          terceros: { adjuntos: true },
           verificador: true,
           informe: { adjuntos: true, terceros: { adjuntos: true } },
         },
@@ -199,7 +229,7 @@ export class PericiasService {
       if (!entity) throw new NotFoundException('entity not found');
       return entity;
     } catch (e: any) {
-      console.log(e);
+      console.error(e);
       throw new HttpException(e.message, e.status);
     }
   }
@@ -207,10 +237,19 @@ export class PericiasService {
   /** @description Inserta una nueva entidad */
   async insert(pericia: PericiaDto): Promise<PericiaDto> {
     try {
+      const entity = await this.periciaRepo.findOne({
+        where: {
+          n_denuncia: pericia.n_denuncia,
+          n_siniestro: pericia.n_siniestro,
+        },
+      });
+      if (entity && pericia.n_denuncia && pericia.n_siniestro) {
+        throw new ConflictException('Entidad repetida');
+      }
       const result = await this.periciaRepo.save(pericia);
       return result;
     } catch (e: any) {
-      console.log(e);
+      console.error(e);
       throw new HttpException(e.message, e.status);
     }
   }
@@ -223,7 +262,7 @@ export class PericiasService {
       const result = await this.periciaRepo.softRemove(entity);
       return result;
     } catch (e: any) {
-      console.log(e);
+      console.error(e);
       throw new HttpException(e.message, e.status);
     }
   }
@@ -236,7 +275,7 @@ export class PericiasService {
       const result = await this.periciaRepo.save(merge);
       return result;
     } catch (e: any) {
-      console.log(e);
+      console.error(e);
       throw new HttpException(e.message, e.status);
     }
   }

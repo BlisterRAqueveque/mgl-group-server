@@ -6,7 +6,7 @@ import { dbConfig } from './configurations/config';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users.module/users.module';
 import { AuthMiddleware } from './users.module/auth/auth.middleware';
-import { PericiasModuleModule } from './pericias.module/pericias.module.module';
+import { PericiasModule } from './pericias.module/pericias.module';
 import * as express from 'express';
 
 @Module({
@@ -14,7 +14,7 @@ import * as express from 'express';
     ConfigModule.forRoot({
       isGlobal: true,
     }), // Import config
-    TypeOrmModule.forRoot(dbConfig), UsersModule, PericiasModuleModule,
+    TypeOrmModule.forRoot(dbConfig), UsersModule, PericiasModule,
 
   ],
   controllers: [AppController],

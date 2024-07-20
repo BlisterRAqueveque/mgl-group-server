@@ -20,9 +20,9 @@ export class PericiaEntity {
   id: number;
   @Column('datetime', { nullable: true })
   fecha_asignado: Date;
-  @Column('bigint', { default: 0 })
+  @Column('bigint', { default: 0, nullable: true })
   n_siniestro: number;
-  @Column('bigint', { default: 0 })
+  @Column('bigint', { default: 0, nullable: true })
   n_denuncia: number;
   @Column('varchar', { length: 250, nullable: true })
   nombre_asegurado: string;

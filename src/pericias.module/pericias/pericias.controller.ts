@@ -39,10 +39,13 @@ export class PericiasController {
     @Query('n_denuncia') n_denuncia: number,
     @Query('nombre_asegurado') nombre_asegurado: string,
     @Query('usuario_carga') usuario_carga: string,
+    @Query('informe') informe: boolean,
+    @Query('limite') limite: boolean,
     @Query('sortBy') sortBy: string,
     @Query('page') page: number,
     @Query('perPage') perPage: number,
     @Query('relations') relations: boolean,
+    @Query('terminado') terminado: boolean,
     @Res() res: Response,
   ) {
     const result = await this.periciaService.getAllFilter(
@@ -54,10 +57,13 @@ export class PericiasController {
       n_denuncia,
       nombre_asegurado,
       usuario_carga,
+      informe,
+      limite,
       sortBy,
       page,
       perPage,
       relations,
+      terminado,
     );
     res.status(HttpStatus.OK).json({
       ok: true,
@@ -102,11 +108,11 @@ export class PericiasController {
     @Body() pericia: Partial<PericiaDto>,
     @Res() res: Response,
   ) {
-    const result = await this.periciaService.update(id, pericia)
+    const result = await this.periciaService.update(id, pericia);
     res.status(HttpStatus.OK).json({
       ok: true,
       result,
-      msg: 'Approved'
-    })
+      msg: 'Approved',
+    });
   }
 }

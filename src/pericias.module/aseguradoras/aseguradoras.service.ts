@@ -79,7 +79,7 @@ export class AseguradorasService {
         await this.aseguradoraRepo.findAndCount(findOptions);
       return { entities, count };
     } catch (e: any) {
-      console.log(e);
+      console.error(e);
       throw new HttpException(e.message, e.activo);
     }
   }
@@ -103,7 +103,7 @@ export class AseguradorasService {
       if (!entity) throw new NotFoundException('entity not found');
       return entity;
     } catch (e: any) {
-      console.log(e);
+      console.error(e);
       throw new HttpException(e.message, e.status);
     }
   }
@@ -126,7 +126,7 @@ export class AseguradorasService {
       });
       return entity;
     } catch (e: any) {
-      console.log(e);
+      console.error(e);
       throw new HttpException(e.message, e.status);
     }
   }
@@ -139,7 +139,7 @@ export class AseguradorasService {
       const result = await this.aseguradoraRepo.softRemove(entity);
       return result;
     } catch (e: any) {
-      console.log(e);
+      console.error(e);
       throw new HttpException(e.message, e.status);
     }
   }

@@ -21,6 +21,7 @@ export class InformeDto {
   conclusion: string;
   text_anio: string;
   fecha_carga: Date;
+  corregido: boolean;
   adjuntos: AdjuntoDto[];
   usuario_carga: UsuarioDto;
   pericia: PericiaDto;
@@ -28,4 +29,6 @@ export class InformeDto {
   terceros: TerceroDto[];
   conductor: string;
   dni_conductor: string;
+  terminado: boolean;
+  fecha_terminado: Date;
 }

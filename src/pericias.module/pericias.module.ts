@@ -55,6 +55,11 @@ import { TerceroEntity } from './terceros/terceros.entity';
     AdjuntosService,
     TercerosService,
   ],
-  exports: [PericiasService, AseguradorasService, TipoSiniestrosService],
+  exports: [
+    PericiasService,
+    AseguradorasService,
+    TipoSiniestrosService,
+    InformesService,
+  ],
 })
-export class PericiasModuleModule {}
+export class PericiasModule {}

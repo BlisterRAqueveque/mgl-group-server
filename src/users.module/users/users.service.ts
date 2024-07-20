@@ -9,7 +9,13 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsuarioDto } from 'src/users.module/users/user.dto';
-import { FindOptionsWhere, Like, Repository } from 'typeorm';
+import {
+  Between,
+  FindManyOptions,
+  FindOptionsWhere,
+  Like,
+  Repository,
+} from 'typeorm';
 import { AuthService } from '../auth/auth.service';
 import { UsuarioEntity } from './user.entity';
 
@@ -37,7 +43,7 @@ export class UsersService {
       const result = await this.userRepo.save(user);
       return { ...result, pericia: [], contrasenia: '****' };
     } catch (e: any) {
-      console.log(e);
+      console.error(e);
       throw new HttpException(e.message, e.status);
     }
   }
@@ -72,7 +78,7 @@ export class UsersService {
       };
       return result;
     } catch (e: any) {
-      console.log(e);
+      console.error(e);
       throw new HttpException(
         e.message ? e.message : 'Server error',
         e.status ? e.status : 500,
@@ -200,6 +206,35 @@ export class UsersService {
       });
       return { activos, inactivos };
     } catch (e: any) {
+      throw new HttpException(e.message, e.status);
+    }
+  }
+
+  async getInformesUsuarios(desde: string, hasta: string, usuario: number) {
+    try {
+      const conditions: FindOptionsWhere<UsuarioDto> = {};
+
+      if (desde && hasta)
+        conditions.informes = {
+          fecha_terminado: Between(new Date(desde), new Date(hasta)),
+        };
+      if (usuario) conditions.id = usuario;
+
+      const findOptions: FindManyOptions<UsuarioDto> = {
+        where: conditions,
+        order: { nombre: 'ASC' },
+        relations: { informes: true },
+        select: {
+          informes: { id: true },
+          nombre: true,
+          apellido: true,
+          id: true,
+        },
+      };
+      const result = await this.userRepo.find(findOptions);
+      return result;
+    } catch (e: any) {
+      console.error(e);
       throw new HttpException(e.message, e.status);
     }
   }

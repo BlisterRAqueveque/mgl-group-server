@@ -2,10 +2,12 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpStatus,
   Param,
   Post,
   Put,
+  Query,
   Res,
   UploadedFiles,
   UseInterceptors,
@@ -92,11 +94,26 @@ export class InformesController {
         msg: 'Approved',
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       res.status(HttpStatus.BAD_REQUEST).json({
         ok: true,
         msg: 'Rejected',
       });
     }
+  }
+
+  @Get('usuarios/informes')
+  async contarTotales(
+    @Query('desde') desde: string,
+    @Query('hasta') hasta: string,
+    @Query('usuario') usuario: number,
+    @Res() res: Response,
+  ) {
+    const result = await this.informeService.contarTotales(
+      desde,
+      hasta,
+      usuario,
+    );
+    res.status(HttpStatus.OK).json({ ok: true, result, msg: 'Approved' });
   }
 }
