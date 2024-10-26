@@ -87,6 +87,7 @@ export class PericiasService {
     n_siniestro: number,
     n_denuncia: number,
     nombre_asegurado: string,
+    aseguradora: string,
     usuario_carga: string,
     informe: boolean,
     limite: boolean,
@@ -136,6 +137,12 @@ export class PericiasService {
           terminado: terminado,
         };
       }
+
+      if (aseguradora)
+        conditions.aseguradora = [
+          { id: +aseguradora },
+          { nombre: Like(`%${aseguradora}%`) },
+        ];
 
       if (limite) conditions.informe = [{ id: IsNull() }];
       const order: FindOptionsOrder<PericiaDto> =

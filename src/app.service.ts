@@ -24,4 +24,39 @@ export class AppService {
       throw new HttpException(e.message, e.status);
     }
   }
+
+  async getFilterData() {
+    try {
+      const verificadores = (
+        await this.userService.getAllFilter(
+          undefined,
+          true,
+          undefined,
+          undefined,
+          undefined,
+          'asc',
+          false,
+        )
+      ).entities;
+
+      const aseguradoras = (
+        await this.aseguradoraService.getAllFilter(
+          undefined,
+          undefined,
+          undefined,
+          true,
+          undefined,
+          undefined,
+          'asc',
+          undefined,
+          undefined,
+          false,
+        )
+      ).entities;
+
+      return { verificadores, aseguradoras };
+    } catch (e: any) {
+      throw new HttpException(e.message, e.status);
+    }
+  }
 }

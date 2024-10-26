@@ -18,4 +18,11 @@ export class AppController {
       msg: 'Approved',
     });
   }
+
+  @Get('filter/data')
+  async getFilterData(@Res() res: Response) {
+    const result = await this.appService.getFilterData();
+
+    res.status(HttpStatus.OK).json({ ok: true, result, msg: 'Approved' });
+  }
 }
