@@ -1,15 +1,16 @@
 //! Inject config module
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import * as dotenv from 'dotenv';
+import { envs } from './envs';
 dotenv.config();
 
 export const dbConfig: TypeOrmModuleOptions = {
-    type: 'mysql',
-    host: process.env.DB_HOST,
-    //port: +process.env.PORT,
-    username: process.env.DB_USER,
-    password: process.env.DB_PASS,
-    database: process.env.DATABASE,
-    autoLoadEntities: true, //! Loads entities
-    synchronize: true //! Synchronize all tables (entities)
-}
+  type: 'mysql',
+  host: envs.DB_HOST,
+  //port: +envs.,
+  username: envs.DB_USER,
+  password: envs.DB_PASS,
+  database: envs.DATABASE,
+  autoLoadEntities: true, //! Loads entities
+  synchronize: true, //! Synchronize all tables (entities)
+};

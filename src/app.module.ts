@@ -1,22 +1,20 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import * as express from 'express';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { dbConfig } from './configurations/config';
-import { ConfigModule } from '@nestjs/config';
-import { UsersModule } from './users.module/users.module';
-import { AuthMiddleware } from './users.module/auth/auth.middleware';
 import { PericiasModule } from './pericias.module/pericias.module';
-import * as express from 'express';
+import { AuthMiddleware } from './users.module/auth/auth.middleware';
+import { UsersModule } from './users.module/users.module';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }), // Import config
-    TypeOrmModule.forRoot(dbConfig), UsersModule, PericiasModule,
-
-  ],
+  imports: [TypeOrmModule.forRoot(dbConfig), UsersModule, PericiasModule],
   controllers: [AppController],
   providers: [AppService],
 })
@@ -38,7 +36,7 @@ export class AppModule implements NestModule {
         {
           path: '/users/auth/register',
           method: RequestMethod.POST,
-        }
+        },
       )
       .forRoutes('');
   }
